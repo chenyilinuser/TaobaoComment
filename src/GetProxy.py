@@ -16,7 +16,6 @@ res = ack._content.decode('UTF-8')
 
 soup = BeautifulSoup(res)
 ips = soup.findAll('tr')
-f = open("proxy.txt", "w+")
 
 lines = []
 for x in range(1, len(ips)):
@@ -25,6 +24,7 @@ for x in range(1, len(ips)):
     ip_port = tds[1].contents[0] + ":" + tds[2].contents[0]
     lines.append(ip_port)
 
+valid_proxy_list = []
 for i in range(0, len(lines)):
     ip_port = lines[i]
     proxy_host = "http://" + ip_port
@@ -35,8 +35,9 @@ for i in range(0, len(lines)):
         s.proxies = proxy
         res = s.get(url, timeout=3)
         print(ip_port)
-        f.write(ip_port+'\n')
+        valid_proxy_list.append(ip_port + "\n")
     except Exception as e:
-        # print(proxy)
-        # print(e)
         continue
+
+with open("proxy.txt", "w+", encoding = "utf-8") as f:
+    f.writelines(valid_proxy_list)
